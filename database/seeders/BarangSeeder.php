@@ -12,16 +12,16 @@ class BarangSeeder extends Seeder
         Barang::truncate();
 
         Barang::create([
-            'Nama_Barang' => 'Botol Plastik 600ml',
-            'Kategori' => 'Plastik',
+            'Nama_Barang' => 'Big Cola',
+            'Kategori' => '600ml',
             'Nomor_Batch' => 'BATCH-001',
             'Jumlah' => 100,
             'Lokasi' => 'Gudang A',
         ]);
 
         Barang::create([
-            'Nama_Barang' => 'Botol Plastik 1500ml',
-            'Kategori' => 'Plastik',
+            'Nama_Barang' => 'Fanta',
+            'Kategori' => '1500ml',
             'Nomor_Batch' => 'BATCH-002',
             'Jumlah' => 50,
             'Lokasi' => 'Gudang B',
