@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->foreign('ID_Barang')
                 ->references('ID_Barang')
                 ->on('barangs')
-                ->restrictOnDelete()
+                ->cascadeOnDelete()
                 ->cascadeOnUpdate();
 
             // Opsional indexing untuk query cepat:
