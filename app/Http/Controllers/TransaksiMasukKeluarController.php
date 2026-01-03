@@ -11,13 +11,16 @@ class TransaksiMasukKeluarController extends Controller
 {
     public function index()
     {
-        $transaksi = TransaksiMasukKeluar::with('barang')->latest()->paginate(10);
+        $transaksi = TransaksiMasukKeluar::with('barang')
+            ->orderByDesc('Tanggal')
+            ->paginate(10);
+
         return view('transaksi.index', compact('transaksi'));
     }
 
     public function create()
     {
-        $barangs = Barang::orderBy('Nama_Barang')->get();
+        $barangs = Barang::orderBy('Nomor_Batch')->get();
         return view('transaksi.create', compact('barangs'));
     }
 
@@ -25,8 +28,8 @@ class TransaksiMasukKeluarController extends Controller
     {
         $data = $request->validate([
             'Departemen'     => 'required|string|max:255',
-            'ID_Barang'      => 'required|integer|exists:barangs,ID_Barang',
             'Nomor_Batch'    => 'required|string|max:255',
+            'ID_Barang'      => 'required|integer|exists:barangs,ID_Barang',
             'Jumlah'         => 'required|integer|min:1',
             'Tanggal'        => 'required|date',
             'Tipe_Transaksi' => 'required|in:Masuk,Keluar',
@@ -34,18 +37,19 @@ class TransaksiMasukKeluarController extends Controller
 
         try {
             DB::transaction(function () use ($data) {
-                // lock barang agar stok aman
                 $barang = Barang::lockForUpdate()->findOrFail($data['ID_Barang']);
 
-                // cek stok jika keluar
+                // optional: pastikan batch cocok dengan barang yang dipilih
+                if ($barang->Nomor_Batch !== $data['Nomor_Batch']) {
+                    throw new \Exception('Nomor batch tidak sesuai dengan barang yang dipilih.');
+                }
+
                 if ($data['Tipe_Transaksi'] === 'Keluar' && $barang->Jumlah < $data['Jumlah']) {
                     throw new \Exception('Stok tidak cukup untuk transaksi keluar.');
                 }
 
-                // simpan transaksi
                 TransaksiMasukKeluar::create($data);
 
-                // update stok
                 if ($data['Tipe_Transaksi'] === 'Masuk') {
                     $barang->Jumlah += $data['Jumlah'];
                 } else {
@@ -68,14 +72,13 @@ class TransaksiMasukKeluarController extends Controller
         return view('transaksi.show', compact('trx'));
     }
 
-   public function edit($id)
-{
-    $transaksi = TransaksiMasukKeluar::findOrFail($id);
-    $barangs = Barang::orderBy('Nama_Barang')->get();
+    public function edit($id)
+    {
+        $transaksi = TransaksiMasukKeluar::findOrFail($id);
+        $barangs = Barang::orderBy('Nomor_Batch')->get();
 
-    return view('transaksi.edit', compact('transaksi', 'barangs'));
-}
-
+        return view('transaksi.edit', compact('transaksi', 'barangs'));
+    }
 
     public function update(Request $request, $id)
     {
@@ -93,25 +96,28 @@ class TransaksiMasukKeluarController extends Controller
         try {
             DB::transaction(function () use ($trx, $data) {
 
-                // 1) rollback efek stok lama
+                // rollback efek stok lama
                 $oldBarang = Barang::lockForUpdate()->findOrFail($trx->ID_Barang);
 
                 if ($trx->Tipe_Transaksi === 'Masuk') {
-                    // dulu nambah, rollback = kurangi
                     if ($oldBarang->Jumlah < $trx->Jumlah) {
                         throw new \Exception('Tidak bisa update: rollback stok lama membuat stok minus.');
                     }
                     $oldBarang->Jumlah -= $trx->Jumlah;
-                } else { // Keluar
-                    // dulu mengurangi, rollback = tambah
+                } else {
                     $oldBarang->Jumlah += $trx->Jumlah;
                 }
                 $oldBarang->save();
 
-                // 2) apply efek stok baru (bisa barang berbeda)
+                // apply efek stok baru
                 $newBarang = ($data['ID_Barang'] == $trx->ID_Barang)
                     ? $oldBarang
                     : Barang::lockForUpdate()->findOrFail($data['ID_Barang']);
+
+                // optional: pastikan batch cocok
+                if ($newBarang->Nomor_Batch !== $data['Nomor_Batch']) {
+                    throw new \Exception('Nomor batch tidak sesuai dengan barang yang dipilih.');
+                }
 
                 if ($data['Tipe_Transaksi'] === 'Keluar' && $newBarang->Jumlah < $data['Jumlah']) {
                     throw new \Exception('Stok tidak cukup untuk transaksi keluar (data baru).');
@@ -124,7 +130,6 @@ class TransaksiMasukKeluarController extends Controller
                 }
                 $newBarang->save();
 
-                // 3) update data transaksi
                 $trx->update($data);
             });
 
@@ -143,13 +148,12 @@ class TransaksiMasukKeluarController extends Controller
             DB::transaction(function () use ($trx) {
                 $barang = Barang::lockForUpdate()->findOrFail($trx->ID_Barang);
 
-                // rollback efek transaksi
                 if ($trx->Tipe_Transaksi === 'Masuk') {
                     if ($barang->Jumlah < $trx->Jumlah) {
                         throw new \Exception('Tidak bisa hapus: stok akan menjadi minus.');
                     }
                     $barang->Jumlah -= $trx->Jumlah;
-                } else { // Keluar
+                } else {
                     $barang->Jumlah += $trx->Jumlah;
                 }
 

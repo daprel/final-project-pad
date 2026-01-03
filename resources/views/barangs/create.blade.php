@@ -30,7 +30,7 @@
 
         <div>
             <label class="form-label">Nomor Batch</label>
-            <input name="Nomor_Batch" value="{{ old('Nomor_Batch') }}" class="form-input" placeholder="Contoh: BATCH-001">
+            <input name="Nomor_Batch" value="{{ old('Nomor_Batch') }}" class="form-input" placeholder="Contoh: SEP-CA-001">
         </div>
 
         <div>
@@ -40,7 +40,7 @@
 
         <div class="md:col-span-2">
             <label class="form-label">Lokasi</label>
-            <input name="Lokasi" value="{{ old('Lokasi') }}" class="form-input" placeholder="Contoh: Rak A1">
+            <input name="Lokasi" value="{{ old('Lokasi') }}" class="form-input" placeholder="Contoh: GUDANG A">
         </div>
     </div>
 
