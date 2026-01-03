@@ -4,32 +4,39 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\TransaksiMasukKeluar;
+use App\Models\Barang;
+use Carbon\Carbon;
 
 class TransaksiMasukKeluarSeeder extends Seeder
 {
     public function run(): void
     {
-        TransaksiMasukKeluar::insert([
-            [
-                'Departemen' => 'Produksi',
-                'ID_Barang' => 1,
-                'Nomor_Batch' => 'BATCH-001',
-                'Jumlah' => 20,
-                'Tanggal' => now(),
-                'Tipe_Transaksi' => 'Masuk',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'Departemen' => 'Distribusi',
-                'ID_Barang' => 2,
-                'Nomor_Batch' => 'BATCH-002',
-                'Jumlah' => 10,
-                'Tanggal' => now(),
-                'Tipe_Transaksi' => 'Keluar',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
+        TransaksiMasukKeluar::truncate();
+
+        $barang = Barang::first();
+
+        // TRANSAKSI MASUK
+        TransaksiMasukKeluar::create([
+            'Departemen' => 'Gudang',
+            'ID_Barang' => $barang->ID_Barang,
+            'Nomor_Batch' => $barang->Nomor_Batch,
+            'Jumlah' => 20,
+            'Tanggal' => Carbon::now(),
+            'Tipe_Transaksi' => 'Masuk',
         ]);
+
+        $barang->increment('Jumlah', 20);
+
+        // TRANSAKSI KELUAR
+        TransaksiMasukKeluar::create([
+            'Departemen' => 'Distribusi',
+            'ID_Barang' => $barang->ID_Barang,
+            'Nomor_Batch' => $barang->Nomor_Batch,
+            'Jumlah' => 10,
+            'Tanggal' => Carbon::now(),
+            'Tipe_Transaksi' => 'Keluar',
+        ]);
+
+        $barang->decrement('Jumlah', 10);
     }
 }
