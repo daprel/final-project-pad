@@ -17,11 +17,11 @@ class Laporan extends Model
         'Total_Keluar',
         'Total_Penyesuaian',
         'Jenis_Laporan',
-        'Generated_By'
+        'Generated_By',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'Generated_By', 'ID_User');
+        return $this->belongsTo(User::class, 'Generated_By', 'id');
     }
 }

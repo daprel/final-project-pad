@@ -16,7 +16,7 @@ class Barang extends Model
         'Kategori',
         'Nomor_Batch',
         'Jumlah',
-        'Lokasi'
+        'Lokasi',
     ];
 
     public function transaksi()

@@ -17,7 +17,7 @@ class TransaksiMasukKeluar extends Model
         'Nomor_Batch',
         'Jumlah',
         'Tanggal',
-        'Tipe_Transaksi'
+        'Tipe_Transaksi',
     ];
 
     public function barang()

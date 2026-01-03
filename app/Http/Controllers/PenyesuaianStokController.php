@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PenyesuaianStok;
 use App\Models\Barang;
+use App\Models\PenyesuaianStok;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PenyesuaianStokController extends Controller
 {
@@ -24,14 +25,31 @@ class PenyesuaianStokController extends Controller
     {
         $data = $request->validate([
             'ID_Barang'           => 'required|integer|exists:barangs,ID_Barang',
-            'Jumlah_Penyesuaian'  => 'required|integer',
+            'Jumlah_Penyesuaian'  => 'required|integer', // boleh +/-
             'Alasan'              => 'required|string|max:255',
             'Tanggal_Penyesuaian' => 'required|date',
         ]);
 
-        PenyesuaianStok::create($data);
+        try {
+            DB::transaction(function () use ($data) {
+                $barang = Barang::lockForUpdate()->findOrFail($data['ID_Barang']);
 
-        return redirect()->route('penyesuaian-stok.index')->with('success', 'Penyesuaian stok berhasil ditambahkan.');
+                $newStock = $barang->Jumlah + $data['Jumlah_Penyesuaian'];
+                if ($newStock < 0) {
+                    throw new \Exception('Penyesuaian membuat stok menjadi minus.');
+                }
+
+                PenyesuaianStok::create($data);
+
+                $barang->Jumlah = $newStock;
+                $barang->save();
+            });
+
+            return redirect()->route('penyesuaian-stok.index')
+                ->with('success', 'Penyesuaian tersimpan dan stok terupdate.');
+        } catch (\Throwable $e) {
+            return back()->withInput()->withErrors($e->getMessage());
+        }
     }
 
     public function show($id)
@@ -58,16 +76,68 @@ class PenyesuaianStokController extends Controller
             'Tanggal_Penyesuaian' => 'required|date',
         ]);
 
-        $ps->update($data);
+        try {
+            DB::transaction(function () use ($ps, $data) {
 
-        return redirect()->route('penyesuaian-stok.index')->with('success', 'Penyesuaian stok berhasil diupdate.');
+                // 1) rollback penyesuaian lama
+                $oldBarang = Barang::lockForUpdate()->findOrFail($ps->ID_Barang);
+                $rollbackStock = $oldBarang->Jumlah - $ps->Jumlah_Penyesuaian;
+
+                if ($rollbackStock < 0) {
+                    throw new \Exception('Tidak bisa update: rollback penyesuaian lama membuat stok minus.');
+                }
+
+                $oldBarang->Jumlah = $rollbackStock;
+                $oldBarang->save();
+
+                // 2) apply penyesuaian baru (bisa barang berbeda)
+                $newBarang = ($data['ID_Barang'] == $ps->ID_Barang)
+                    ? $oldBarang
+                    : Barang::lockForUpdate()->findOrFail($data['ID_Barang']);
+
+                $newStock = $newBarang->Jumlah + $data['Jumlah_Penyesuaian'];
+                if ($newStock < 0) {
+                    throw new \Exception('Penyesuaian baru membuat stok minus.');
+                }
+
+                $newBarang->Jumlah = $newStock;
+                $newBarang->save();
+
+                // 3) update record penyesuaian
+                $ps->update($data);
+            });
+
+            return redirect()->route('penyesuaian-stok.index')
+                ->with('success', 'Penyesuaian berhasil diupdate dan stok tersinkron.');
+        } catch (\Throwable $e) {
+            return back()->withInput()->withErrors($e->getMessage());
+        }
     }
 
     public function destroy($id)
     {
         $ps = PenyesuaianStok::findOrFail($id);
-        $ps->delete();
 
-        return redirect()->route('penyesuaian-stok.index')->with('success', 'Penyesuaian stok berhasil dihapus.');
+        try {
+            DB::transaction(function () use ($ps) {
+                $barang = Barang::lockForUpdate()->findOrFail($ps->ID_Barang);
+
+                // rollback efek penyesuaian
+                $newStock = $barang->Jumlah - $ps->Jumlah_Penyesuaian;
+                if ($newStock < 0) {
+                    throw new \Exception('Tidak bisa hapus: stok akan menjadi minus.');
+                }
+
+                $barang->Jumlah = $newStock;
+                $barang->save();
+
+                $ps->delete();
+            });
+
+            return redirect()->route('penyesuaian-stok.index')
+                ->with('success', 'Penyesuaian berhasil dihapus dan stok dikembalikan.');
+        } catch (\Throwable $e) {
+            return back()->withErrors($e->getMessage());
+        }
     }
 }

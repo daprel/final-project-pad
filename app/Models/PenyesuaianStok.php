@@ -15,7 +15,7 @@ class PenyesuaianStok extends Model
         'ID_Barang',
         'Jumlah_Penyesuaian',
         'Alasan',
-        'Tanggal_Penyesuaian'
+        'Tanggal_Penyesuaian',
     ];
 
     public function barang()
