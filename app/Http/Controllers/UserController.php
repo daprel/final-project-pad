@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -21,20 +22,22 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'Nama'  => 'required|string|max:255',
-            'Email' => 'required|email|unique:users,Email',
-            'Role'  => 'required|in:Supervisor,Staf',
+            'name'  => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'role'  => 'required|in:Supervisor,Staf',
+            // opsional: password manual
+            'password' => 'nullable|string|min:6',
         ]);
 
-        User::create($data);
+        User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'role' => $data['role'],
+            // kalau user tidak input password, set default
+            'password' => Hash::make($data['password'] ?? 'password123'),
+        ]);
 
         return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan.');
-    }
-
-    public function show($id)
-    {
-        $user = User::findOrFail($id);
-        return view('users.show', compact('user'));
     }
 
     public function edit($id)
@@ -48,21 +51,28 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $data = $request->validate([
-            'Nama'  => 'required|string|max:255',
-            'Email' => 'required|email|unique:users,Email,' . $id . ',ID_User',
-            'Role'  => 'required|in:Supervisor,Staf',
+            'name'  => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'role'  => 'required|in:Supervisor,Staf',
+            'password' => 'nullable|string|min:6',
         ]);
 
-        $user->update($data);
+        $user->name = $data['name'];
+        $user->email = $data['email'];
+        $user->role = $data['role'];
+
+        if (!empty($data['password'])) {
+            $user->password = Hash::make($data['password']);
+        }
+
+        $user->save();
 
         return redirect()->route('users.index')->with('success', 'User berhasil diupdate.');
     }
 
     public function destroy($id)
     {
-        $user = User::findOrFail($id);
-        $user->delete();
-
+        User::findOrFail($id)->delete();
         return redirect()->route('users.index')->with('success', 'User berhasil dihapus.');
     }
 }
