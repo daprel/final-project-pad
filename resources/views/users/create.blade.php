@@ -6,7 +6,7 @@
 <div class="flex items-center justify-between gap-3">
     <div>
         <h1 class="text-xl font-semibold">Tambah User</h1>
-        <p class="text-sm text-gray-500">Buat akun user baru (role dan password).</p>
+        <p class="text-sm text-gray-500">Buat akun baru dengan role.</p>
     </div>
     <a href="{{ route('users.index') }}"
        class="rounded-lg border px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
@@ -19,31 +19,27 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-            <label class="text-sm font-semibold text-gray-700">Nama</label>
-            <input name="name" value="{{ old('name') }}"
-                   class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+            <label class="form-label">Nama</label>
+            <input name="name" value="{{ old('name') }}" class="form-input">
         </div>
 
         <div>
-            <label class="text-sm font-semibold text-gray-700">Email</label>
-            <input name="email" value="{{ old('email') }}"
-                   class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+            <label class="form-label">Email</label>
+            <input name="email" value="{{ old('email') }}" class="form-input">
         </div>
 
         <div>
-            <label class="text-sm font-semibold text-gray-700">Role</label>
-            <select name="role"
-                    class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-                <option value="admin" {{ old('role')=='admin'?'selected':'' }}>admin</option>
-                <option value="supervisor" {{ old('role')=='supervisor'?'selected':'' }}>supervisor</option>
-                <option value="staf" {{ old('role')=='staf'?'selected':'' }}>staf</option>
+            <label class="form-label">Role</label>
+            <select name="role" class="form-select">
+                @foreach(['admin','supervisor','staf'] as $r)
+                    <option value="{{ $r }}" {{ old('role') == $r ? 'selected' : '' }}>{{ $r }}</option>
+                @endforeach
             </select>
         </div>
 
         <div>
-            <label class="text-sm font-semibold text-gray-700">Password</label>
-            <input type="password" name="password"
-                   class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-input">
         </div>
     </div>
 

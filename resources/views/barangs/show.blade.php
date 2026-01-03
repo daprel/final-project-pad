@@ -21,34 +21,22 @@
 </div>
 
 <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-    <div class="rounded-xl border p-4">
-        <div class="text-xs text-gray-500">ID Barang</div>
-        <div class="text-lg font-semibold">{{ $barang->ID_Barang }}</div>
-    </div>
+    @php
+        $items = [
+            ['label' => 'ID Barang', 'value' => $barang->ID_Barang],
+            ['label' => 'Nama Barang', 'value' => $barang->Nama_Barang],
+            ['label' => 'Kategori', 'value' => $barang->Kategori],
+            ['label' => 'Nomor Batch', 'value' => $barang->Nomor_Batch],
+            ['label' => 'Stok', 'value' => $barang->Jumlah],
+            ['label' => 'Lokasi', 'value' => $barang->Lokasi],
+        ];
+    @endphp
 
-    <div class="rounded-xl border p-4">
-        <div class="text-xs text-gray-500">Stok</div>
-        <div class="text-lg font-semibold">{{ $barang->Jumlah }}</div>
-    </div>
-
-    <div class="rounded-xl border p-4">
-        <div class="text-xs text-gray-500">Nama Barang</div>
-        <div class="text-lg font-semibold">{{ $barang->Nama_Barang }}</div>
-    </div>
-
-    <div class="rounded-xl border p-4">
-        <div class="text-xs text-gray-500">Kategori</div>
-        <div class="text-lg font-semibold">{{ $barang->Kategori }}</div>
-    </div>
-
-    <div class="rounded-xl border p-4">
-        <div class="text-xs text-gray-500">Nomor Batch</div>
-        <div class="text-lg font-semibold">{{ $barang->Nomor_Batch }}</div>
-    </div>
-
-    <div class="rounded-xl border p-4">
-        <div class="text-xs text-gray-500">Lokasi</div>
-        <div class="text-lg font-semibold">{{ $barang->Lokasi }}</div>
-    </div>
+    @foreach($items as $it)
+        <div class="rounded-xl border p-4">
+            <div class="text-xs text-gray-500">{{ $it['label'] }}</div>
+            <div class="text-lg font-semibold">{{ $it['value'] }}</div>
+        </div>
+    @endforeach
 </div>
 @endsection

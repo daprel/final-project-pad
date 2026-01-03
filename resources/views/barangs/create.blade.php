@@ -6,7 +6,7 @@
 <div class="flex items-center justify-between gap-3">
     <div>
         <h1 class="text-xl font-semibold">Tambah Barang</h1>
-        <p class="text-sm text-gray-500">Masukkan informasi barang dan stok awal.</p>
+        <p class="text-sm text-gray-500">Masukkan data barang dan stok awal.</p>
     </div>
     <a href="{{ route('barangs.index') }}"
        class="rounded-lg border px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
@@ -19,37 +19,28 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-            <label class="text-sm font-semibold text-gray-700">Nama Barang</label>
-            <input name="Nama_Barang" value="{{ old('Nama_Barang') }}"
-                   class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                   placeholder="Contoh: Botol Air Mineral">
+            <label class="form-label">Nama Barang</label>
+            <input name="Nama_Barang" value="{{ old('Nama_Barang') }}" class="form-input" placeholder="Contoh: Botol Air Mineral">
         </div>
 
         <div>
-            <label class="text-sm font-semibold text-gray-700">Kategori</label>
-            <input name="Kategori" value="{{ old('Kategori') }}"
-                   class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                   placeholder="Contoh: Plastik">
+            <label class="form-label">Kategori</label>
+            <input name="Kategori" value="{{ old('Kategori') }}" class="form-input" placeholder="Contoh: Plastik">
         </div>
 
         <div>
-            <label class="text-sm font-semibold text-gray-700">Nomor Batch</label>
-            <input name="Nomor_Batch" value="{{ old('Nomor_Batch') }}"
-                   class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                   placeholder="Contoh: BATCH-001">
+            <label class="form-label">Nomor Batch</label>
+            <input name="Nomor_Batch" value="{{ old('Nomor_Batch') }}" class="form-input" placeholder="Contoh: BATCH-001">
         </div>
 
         <div>
-            <label class="text-sm font-semibold text-gray-700">Stok (Jumlah)</label>
-            <input type="number" name="Jumlah" value="{{ old('Jumlah', 0) }}"
-                   class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+            <label class="form-label">Stok (Jumlah)</label>
+            <input type="number" name="Jumlah" value="{{ old('Jumlah', 0) }}" class="form-input" min="0">
         </div>
 
         <div class="md:col-span-2">
-            <label class="text-sm font-semibold text-gray-700">Lokasi</label>
-            <input name="Lokasi" value="{{ old('Lokasi') }}"
-                   class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                   placeholder="Contoh: Rak A1">
+            <label class="form-label">Lokasi</label>
+            <input name="Lokasi" value="{{ old('Lokasi') }}" class="form-input" placeholder="Contoh: Rak A1">
         </div>
     </div>
 

@@ -20,21 +20,18 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-            <label class="text-sm font-semibold text-gray-700">Nama</label>
-            <input name="name" value="{{ old('name', $user->name) }}"
-                   class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+            <label class="form-label">Nama</label>
+            <input name="name" value="{{ old('name', $user->name) }}" class="form-input">
         </div>
 
         <div>
-            <label class="text-sm font-semibold text-gray-700">Email</label>
-            <input name="email" value="{{ old('email', $user->email) }}"
-                   class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+            <label class="form-label">Email</label>
+            <input name="email" value="{{ old('email', $user->email) }}" class="form-input">
         </div>
 
         <div>
-            <label class="text-sm font-semibold text-gray-700">Role</label>
-            <select name="role"
-                    class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+            <label class="form-label">Role</label>
+            <select name="role" class="form-select">
                 @foreach(['admin','supervisor','staf'] as $r)
                     <option value="{{ $r }}" {{ old('role', $user->role) == $r ? 'selected' : '' }}>
                         {{ $r }}
@@ -44,10 +41,9 @@
         </div>
 
         <div>
-            <label class="text-sm font-semibold text-gray-700">Password (opsional)</label>
-            <input type="password" name="password"
-                   class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-            <p class="mt-1 text-xs text-gray-500">Kosongkan jika tidak ingin mengganti password.</p>
+            <label class="form-label">Password (opsional)</label>
+            <input type="password" name="password" class="form-input">
+            <p class="form-help">Kosongkan jika tidak ingin mengganti password.</p>
         </div>
     </div>
 
