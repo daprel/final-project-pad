@@ -1,16 +1,64 @@
 @extends('layouts.app')
 
+@section('title', 'Edit Barang')
+
 @section('content')
-<h2>Edit Barang</h2>
+<div class="flex items-center justify-between gap-3">
+    <div>
+        <h1 class="text-xl font-semibold">Edit Barang</h1>
+        <p class="text-sm text-gray-500">Perbarui informasi barang.</p>
+    </div>
+    <a href="{{ route('barangs.index') }}"
+       class="rounded-lg border px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+        Kembali
+    </a>
+</div>
 
-<form method="POST" action="{{ route('barangs.update', $barang->ID_Barang) }}">
-    @csrf @method('PUT')
-    <p>Nama Barang<br><input name="Nama_Barang" value="{{ old('Nama_Barang', $barang->Nama_Barang) }}"></p>
-    <p>Kategori<br><input name="Kategori" value="{{ old('Kategori', $barang->Kategori) }}"></p>
-    <p>Nomor Batch<br><input name="Nomor_Batch" value="{{ old('Nomor_Batch', $barang->Nomor_Batch) }}"></p>
-    <p>Jumlah<br><input type="number" name="Jumlah" value="{{ old('Jumlah', $barang->Jumlah) }}"></p>
-    <p>Lokasi<br><input name="Lokasi" value="{{ old('Lokasi', $barang->Lokasi) }}"></p>
+<form class="mt-6 space-y-4" method="POST" action="{{ route('barangs.update', $barang->ID_Barang) }}">
+    @csrf
+    @method('PUT')
 
-    <button type="submit">Update</button>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+            <label class="text-sm font-semibold text-gray-700">Nama Barang</label>
+            <input name="Nama_Barang" value="{{ old('Nama_Barang', $barang->Nama_Barang) }}"
+                   class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+        </div>
+
+        <div>
+            <label class="text-sm font-semibold text-gray-700">Kategori</label>
+            <input name="Kategori" value="{{ old('Kategori', $barang->Kategori) }}"
+                   class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+        </div>
+
+        <div>
+            <label class="text-sm font-semibold text-gray-700">Nomor Batch</label>
+            <input name="Nomor_Batch" value="{{ old('Nomor_Batch', $barang->Nomor_Batch) }}"
+                   class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+        </div>
+
+        <div>
+            <label class="text-sm font-semibold text-gray-700">Stok (Jumlah)</label>
+            <input type="number" name="Jumlah" value="{{ old('Jumlah', $barang->Jumlah) }}"
+                   class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+            <p class="mt-1 text-xs text-gray-500">Catatan: stok juga berubah lewat transaksi & penyesuaian.</p>
+        </div>
+
+        <div class="md:col-span-2">
+            <label class="text-sm font-semibold text-gray-700">Lokasi</label>
+            <input name="Lokasi" value="{{ old('Lokasi', $barang->Lokasi) }}"
+                   class="mt-1 w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+        </div>
+    </div>
+
+    <div class="pt-2 flex items-center gap-2">
+        <button class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">
+            Update
+        </button>
+        <a href="{{ route('barangs.index') }}"
+           class="rounded-lg border px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+            Batal
+        </a>
+    </div>
 </form>
 @endsection
