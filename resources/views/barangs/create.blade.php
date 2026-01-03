@@ -20,12 +20,12 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
             <label class="form-label">Nama Barang</label>
-            <input name="Nama_Barang" value="{{ old('Nama_Barang') }}" class="form-input" placeholder="Contoh: Botol Air Mineral">
+            <input name="Nama_Barang" value="{{ old('Nama_Barang') }}" class="form-input" placeholder="Contoh: Pepsi">
         </div>
 
         <div>
             <label class="form-label">Kategori</label>
-            <input name="Kategori" value="{{ old('Kategori') }}" class="form-input" placeholder="Contoh: Plastik">
+            <input name="Kategori" value="{{ old('Kategori') }}" class="form-input" placeholder="Contoh: 550ml">
         </div>
 
         <div>
