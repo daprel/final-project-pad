@@ -68,12 +68,14 @@ class TransaksiMasukKeluarController extends Controller
         return view('transaksi.show', compact('trx'));
     }
 
-    public function edit($id)
-    {
-        $trx = TransaksiMasukKeluar::findOrFail($id);
-        $barangs = Barang::orderBy('Nama_Barang')->get();
-        return view('transaksi.edit', compact('trx', 'barangs'));
-    }
+   public function edit($id)
+{
+    $transaksi = TransaksiMasukKeluar::findOrFail($id);
+    $barangs = Barang::orderBy('Nama_Barang')->get();
+
+    return view('transaksi.edit', compact('transaksi', 'barangs'));
+}
+
 
     public function update(Request $request, $id)
     {
