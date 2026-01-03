@@ -3,6 +3,11 @@
 @section('title', 'Edit Barang')
 
 @section('content')
+@php
+    $kategoriOptions = ['250ml','600ml','1000ml','1500ml'];
+    $lokasiOptions = ['Gudang A','Gudang B','Gudang C','Gudang D'];
+@endphp
+
 <div class="flex items-center justify-between gap-3">
     <div>
         <h1 class="text-xl font-semibold">Edit Barang</h1>
@@ -21,28 +26,50 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
             <label class="form-label">Nama Barang</label>
-            <input name="Nama_Barang" value="{{ old('Nama_Barang', $barang->Nama_Barang) }}" class="form-input">
+            <input name="Nama_Barang"
+                   value="{{ old('Nama_Barang', $barang->Nama_Barang) }}"
+                   class="form-input">
         </div>
 
         <div>
             <label class="form-label">Kategori</label>
-            <input name="Kategori" value="{{ old('Kategori', $barang->Kategori) }}" class="form-input">
+            <select name="Kategori" class="form-select">
+                <option value="">-- Pilih Kategori --</option>
+                @foreach($kategoriOptions as $opt)
+                    <option value="{{ $opt }}" {{ old('Kategori', $barang->Kategori) === $opt ? 'selected' : '' }}>
+                        {{ $opt }}
+                    </option>
+                @endforeach
+            </select>
         </div>
 
         <div>
             <label class="form-label">Nomor Batch</label>
-            <input name="Nomor_Batch" value="{{ old('Nomor_Batch', $barang->Nomor_Batch) }}" class="form-input">
+            <input name="Nomor_Batch"
+                   value="{{ old('Nomor_Batch', $barang->Nomor_Batch) }}"
+                   class="form-input">
         </div>
 
         <div>
             <label class="form-label">Stok (Jumlah)</label>
-            <input type="number" name="Jumlah" value="{{ old('Jumlah', $barang->Jumlah) }}" class="form-input" min="0">
+            <input type="number"
+                   name="Jumlah"
+                   value="{{ old('Jumlah', $barang->Jumlah) }}"
+                   class="form-input"
+                   min="0">
             <p class="form-help">Stok juga akan berubah melalui transaksi & penyesuaian.</p>
         </div>
 
         <div class="md:col-span-2">
             <label class="form-label">Lokasi</label>
-            <input name="Lokasi" value="{{ old('Lokasi', $barang->Lokasi) }}" class="form-input">
+            <select name="Lokasi" class="form-select">
+                <option value="">-- Pilih Lokasi --</option>
+                @foreach($lokasiOptions as $opt)
+                    <option value="{{ $opt }}" {{ old('Lokasi', $barang->Lokasi) === $opt ? 'selected' : '' }}>
+                        {{ $opt }}
+                    </option>
+                @endforeach
+            </select>
         </div>
     </div>
 
